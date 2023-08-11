@@ -1,18 +1,18 @@
 import { ApolloServer, } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
 import { expressMiddleware } from '@apollo/server/express4';
-import Resolvers from './Resolvers';
 import bodyParser from 'body-parser';
-import Schema from './Schema';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import sequelizeConnection from './schema/config';
 import express from 'express'
 import http from 'http';
 import cors from 'cors'
+import sequelizeConnection from './schema/config';
+import { schema } from './modules/Schema';
+//import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 
 interface GraphQlContext {
   token?: string;
 }
+
 
 /**
  * Starts the GraphQL server with Express
@@ -23,9 +23,21 @@ async function startServer() {
   const httpServer = http.createServer(app);
 
   const server = new ApolloServer<GraphQlContext>({
-    typeDefs: Schema,
-    resolvers: Resolvers,
+    schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    csrfPrevention: true,
+    formatError: error => {
+      // remove the internal sequelize error message
+      // leave only the important validation error
+      const message = error.message
+        .replace('SequelizeValidationError: ', '')
+        .replace('Validation error: ', '');
+
+      return {
+        ...error,
+        message,
+      };
+    },
   });
   await server.start();
 
