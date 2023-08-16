@@ -5,7 +5,7 @@ import Event from './Event.model';
 import Invitation from './Invitation.model';
 
 interface UserAttributes {
-  readonly id: typeof DataType.UUID;
+  readonly id: string;
   name: string;
   email: string;
   password: string;
@@ -33,7 +33,7 @@ export default class User extends Model<UserAttributes, UserInput> implements Us
     allowNull: false,
     defaultValue: DataType.UUIDV4
   })
-  readonly id!: typeof DataType.UUID;
+  readonly id!: string;
 
   @Column({
     type: DataType.STRING,

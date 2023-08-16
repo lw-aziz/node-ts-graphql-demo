@@ -7,6 +7,7 @@ import http from 'http';
 import cors from 'cors'
 import sequelizeConnection from './schema/config';
 import { schema } from './modules/Schema';
+import { configData } from './config/config';
 //import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 
 interface GraphQlContext {
@@ -52,8 +53,8 @@ async function startServer() {
   );
 
   // Modified server startup
-  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
-  console.log(`🚀 Server ready at http://localhost:4000/`);
+  await new Promise<void>((resolve) => httpServer.listen({ port: configData.API_PORT }, resolve));
+  console.log(`🚀 Server ready at http://localhost:${configData.API_PORT}/`);
 }
 
 sequelizeConnection.sync().then(async () => {
