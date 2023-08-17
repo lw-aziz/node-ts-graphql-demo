@@ -76,6 +76,7 @@ export type NotFound = {
 
 export type Query = {
   __typename?: 'Query';
+  getEvents: Array<Maybe<EventData>>;
   getUserDetail?: Maybe<UserData>;
 };
 
@@ -268,6 +269,7 @@ export type NotFoundResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  getEvents?: Resolver<Array<Maybe<ResolversTypes['EventData']>>, ParentType, ContextType>;
   getUserDetail?: Resolver<Maybe<ResolversTypes['UserData']>, ParentType, ContextType, RequireFields<QueryGetUserDetailArgs, 'id'>>;
 };
 

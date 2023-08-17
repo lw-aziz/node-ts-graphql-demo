@@ -1,7 +1,9 @@
 type Mutation {
   createEvent(data: CreateEventInput!): EventData @isAuthenticated
 }
-
+type Query {
+  getEvents: [EventData]! @isAuthenticated
+}
 input CreateEventInput {
   title: String!
   description: String!
