@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { UserInterface } from "../interfaces";
 import { configData } from '../config/config';
-import { AbstractDataTypeConstructor } from 'sequelize';
+import User from '../schema/models/User.model';
 
 interface JwtPayload {
     id: string;
@@ -31,4 +31,22 @@ export async function decodeJwtToken(token: string) {
     } catch (error) {
         return null; // Invalid token or token has expired.
     }
+}
+
+export async function getUserFromToken(token?: string) {
+    if (!token) return null;
+
+    const decoded = await decodeJwtToken(token);
+    if (!decoded) return null;
+
+    // check expiration
+    if (decoded.exp < Date.now() / 1000) {
+        return null;
+    }
+
+    // get the user by id
+    const user = await User.findByPk(decoded.id);
+
+    return user;
+
 }

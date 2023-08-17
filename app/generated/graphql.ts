@@ -15,11 +15,25 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DATETIME: { input: any; output: any; }
+  Date: { input: any; output: any; }
+  DateTime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
 };
 
 export type AuthSuccess = {
   __typename?: 'AuthSuccess';
   accessToken: Scalars['String']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+};
+
+export type CommonResponse = {
+  __typename?: 'CommonResponse';
+  message?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+};
+
+export type ExampleType = {
+  __typename?: 'ExampleType';
   message?: Maybe<Scalars['String']['output']>;
 };
 
@@ -46,7 +60,7 @@ export type NotFound = {
 
 export type Query = {
   __typename?: 'Query';
-  getEvent?: Maybe<Scalars['String']['output']>;
+  getEvent?: Maybe<ExampleType>;
   getUserDetail?: Maybe<UserData>;
 };
 
@@ -150,7 +164,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AuthSuccess: ResolverTypeWrapper<AuthSuccess>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CommonResponse: ResolverTypeWrapper<CommonResponse>;
   DATETIME: ResolverTypeWrapper<Scalars['DATETIME']['output']>;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
+  ExampleType: ResolverTypeWrapper<ExampleType>;
+  JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   NotFound: ResolverTypeWrapper<NotFound>;
   Query: ResolverTypeWrapper<{}>;
@@ -164,7 +183,12 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AuthSuccess: AuthSuccess;
   Boolean: Scalars['Boolean']['output'];
+  CommonResponse: CommonResponse;
   DATETIME: Scalars['DATETIME']['output'];
+  Date: Scalars['Date']['output'];
+  DateTime: Scalars['DateTime']['output'];
+  ExampleType: ExampleType;
+  JSON: Scalars['JSON']['output'];
   Mutation: {};
   NotFound: NotFound;
   Query: {};
@@ -174,14 +198,41 @@ export type ResolversParentTypes = {
   UserSignUpInput: UserSignUpInput;
 };
 
+export type IsAuthenticatedDirectiveArgs = { };
+
+export type IsAuthenticatedDirectiveResolver<Result, Parent, ContextType = any, Args = IsAuthenticatedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type AuthSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthSuccess'] = ResolversParentTypes['AuthSuccess']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CommonResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommonResponse'] = ResolversParentTypes['CommonResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DatetimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DATETIME'], any> {
   name: 'DATETIME';
+}
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
+export type ExampleTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExampleType'] = ResolversParentTypes['ExampleType']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
+  name: 'JSON';
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -195,7 +246,7 @@ export type NotFoundResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getEvent?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  getEvent?: Resolver<Maybe<ResolversTypes['ExampleType']>, ParentType, ContextType>;
   getUserDetail?: Resolver<Maybe<ResolversTypes['UserData']>, ParentType, ContextType, RequireFields<QueryGetUserDetailArgs, 'id'>>;
 };
 
@@ -212,10 +263,18 @@ export type UserDataResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type Resolvers<ContextType = any> = {
   AuthSuccess?: AuthSuccessResolvers<ContextType>;
+  CommonResponse?: CommonResponseResolvers<ContextType>;
   DATETIME?: GraphQLScalarType;
+  Date?: GraphQLScalarType;
+  DateTime?: GraphQLScalarType;
+  ExampleType?: ExampleTypeResolvers<ContextType>;
+  JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   NotFound?: NotFoundResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   UserData?: UserDataResolvers<ContextType>;
 };
 
+export type DirectiveResolvers<ContextType = any> = {
+  isAuthenticated?: IsAuthenticatedDirectiveResolver<any, any, ContextType>;
+};

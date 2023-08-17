@@ -8,10 +8,13 @@ import cors from 'cors'
 import sequelizeConnection from './schema/config';
 import { schema } from './modules/Schema';
 import { configData } from './config/config';
+import { UserInterface } from './interfaces';
 //import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 
 interface GraphQlContext {
-  token?: string;
+  req?: {
+    user?: UserInterface
+  }
 }
 
 
@@ -24,8 +27,10 @@ async function startServer() {
   const httpServer = http.createServer(app);
 
   const server = new ApolloServer<GraphQlContext>({
-    schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    schema: schema(),
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+    ],
     csrfPrevention: true,
     formatError: error => {
       // remove the internal sequelize error message
@@ -48,7 +53,9 @@ async function startServer() {
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      context: async ({ req }) => {
+        return { req };
+      },
     }),
   );
 

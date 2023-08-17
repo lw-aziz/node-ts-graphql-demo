@@ -1,17 +1,9 @@
-import { QueryResolvers, UserData } from "../../../generated/graphql";
-import User from "../../../schema/models/User.model";
+import { QueryResolvers } from "../../../generated/graphql";
 import UserMapper from "../user.mapper";
 
-export const getUserDetail: QueryResolvers["getUserDetail"] = async (_, { id }) => {
+export const getUserDetail: QueryResolvers["getUserDetail"] = async (_, { id }, { req: { user: authUser } }) => {
     try {
-
-        //get the user that contains the specified ID.
-        const user = await User.findByPk(id);
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        return UserMapper.toUser(user);
+        return UserMapper.toUser(authUser);
     } catch (error) {
         throw error;
     }

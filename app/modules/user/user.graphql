@@ -9,7 +9,7 @@ type NotFound {
 }
 
 type Query {
-  getUserDetail(id: String!): UserData
+  getUserDetail(id: String!): UserData @isAuthenticated
 }
 
 type Mutation {

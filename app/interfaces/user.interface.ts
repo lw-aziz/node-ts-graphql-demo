@@ -1,5 +1,3 @@
-import { AbstractDataTypeConstructor } from "sequelize"
-
 export interface AuthenticationSuccessInterface {
     accessToken: string
 };
