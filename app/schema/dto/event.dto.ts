@@ -1,10 +1,10 @@
-import { AbstractDataTypeConstructor, Optional } from "sequelize";
+import { Optional } from "sequelize";
 
 export type CreateEventDTO = {
     title: string,
     description?: string,
     eventDate: Date,
-    userId: AbstractDataTypeConstructor
+    userId: string
 }
 
 export type UpdateEventDTO = Optional<CreateEventDTO, 'eventDate' | 'title'>;

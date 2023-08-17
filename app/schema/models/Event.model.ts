@@ -1,22 +1,22 @@
 import { Table, Column, Model, ForeignKey, BelongsTo, PrimaryKey, IsAfter, DataType, CreatedAt, HasMany } from 'sequelize-typescript';
 import User from './User.model';
 import { Optional } from 'sequelize';
-import Invitation, { InvitationOutput } from './Invitation.model';
+import Invitation from './Invitation.model';
 
 interface EventAttributes {
-  readonly id: typeof DataType.UUID;
+  readonly id: string;
   title: string;
   description: string;
   eventDate: Date;
-  userId: typeof DataType.UUID;
+  userId: string;
   readonly createdAt: Date;
 
   getUser(): Promise<User>;
 }
 export interface EventInput extends Optional<Omit<EventAttributes, 'id' | 'createdAt' | 'getUser'>, 'description'> { }
 
-export interface EventOutput extends EventAttributes { 
-  invitations? : Invitation[]
+export interface EventOutput extends EventAttributes {
+  invitations?: Invitation[]
 }
 
 @Table({
@@ -26,7 +26,7 @@ export interface EventOutput extends EventAttributes {
   tableName: 'events',
   underscored: true,
 })
-export default class Event extends Model implements EventAttributes {
+export default class Event extends Model<EventAttributes, EventInput> implements EventAttributes {
 
   @PrimaryKey
   @Column({
@@ -34,7 +34,7 @@ export default class Event extends Model implements EventAttributes {
     allowNull: false,
     defaultValue: DataType.UUIDV4
   })
-  id!: typeof DataType.UUID;
+  id!: string;
 
   @Column({
     type: DataType.STRING,
@@ -58,7 +58,7 @@ export default class Event extends Model implements EventAttributes {
   @Column({
     type: DataType.UUID,
   })
-  userId!: typeof DataType.UUID;
+  userId!: string;
 
   @CreatedAt
   createdAt!: Date;

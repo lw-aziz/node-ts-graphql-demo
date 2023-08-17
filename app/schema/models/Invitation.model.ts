@@ -10,7 +10,7 @@ export enum InvitationStatus {
 };
 
 interface InvitationAttributes {
-  readonly id: typeof DataType.UUID;
+  readonly id: string;
   readonly eventId: typeof DataType.UUID | string;
   readonly invitedBy: typeof DataType.UUID;
   readonly invitedTo: typeof DataType.UUID;

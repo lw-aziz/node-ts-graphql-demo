@@ -1,23 +1,21 @@
 import { AbstractDataTypeConstructor, Identifier } from "sequelize";
 import Event, { EventInput, EventOutput } from "../models/Event.model";
-import { ApiError } from "../../utils/custom-api-error";
-import { httpStatusCodes } from "../../utils/httpStatusCodes";
 import { UpdateEventDTO } from "../dto/event.dto";
 import Invitation from "../models/Invitation.model";
 import User from "../models/User.model";
 
 export class EventDAL {
-    static async createEvent(userData: EventInput): Promise<EventOutput> {
+    static async createEvent(userData: EventInput): Promise<Event> {
         const event = await Event.create(userData);
         return event;
     }
 
-    static async getEventsByUser(userId: AbstractDataTypeConstructor): Promise<EventOutput[] | []> {
+    static async getEventsByUser(userId: string): Promise<Event[] | []> {
         const events = await Event.findAll({ where: { userId } });
         return events;
     }
 
-    static async getById(eventId: Identifier): Promise<EventOutput | null> {
+    static async getById(eventId: Identifier): Promise<Event | null> {
         try {
             const event = await Event.findByPk(eventId, {
                 include: [
@@ -45,7 +43,7 @@ export class EventDAL {
             const event = await Event.findByPk(eventId);
 
             if (!event) {
-                throw new ApiError('Event not found', httpStatusCodes.NOT_FOUND);
+                throw new Error('Event not found');
             }
 
             await event.destroy();
@@ -59,7 +57,7 @@ export class EventDAL {
     static async updateById(eventId: Identifier, payload: UpdateEventDTO): Promise<Event> {
         try {
             const event = await Event.findByPk(eventId);
-            if (!event) throw new ApiError('Event not found', httpStatusCodes.NOT_FOUND);
+            if (!event) throw new Error('Event not found');
             await event.update(payload);
             return event;
         } catch (error) {

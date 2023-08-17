@@ -32,15 +32,31 @@ export type CommonResponse = {
   status?: Maybe<Scalars['String']['output']>;
 };
 
-export type ExampleType = {
-  __typename?: 'ExampleType';
-  message?: Maybe<Scalars['String']['output']>;
+export type CreateEventInput = {
+  description: Scalars['String']['input'];
+  eventDate: Scalars['DateTime']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type EventData = {
+  __typename?: 'EventData';
+  createdAt: Scalars['DateTime']['output'];
+  description: Scalars['String']['output'];
+  eventDate: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  title: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createEvent?: Maybe<EventData>;
   userSignIn?: Maybe<AuthSuccess>;
   userSignUp?: Maybe<AuthSuccess>;
+};
+
+
+export type MutationCreateEventArgs = {
+  data: CreateEventInput;
 };
 
 
@@ -60,7 +76,6 @@ export type NotFound = {
 
 export type Query = {
   __typename?: 'Query';
-  getEvent?: Maybe<ExampleType>;
   getUserDetail?: Maybe<UserData>;
 };
 
@@ -165,10 +180,11 @@ export type ResolversTypes = {
   AuthSuccess: ResolverTypeWrapper<AuthSuccess>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CommonResponse: ResolverTypeWrapper<CommonResponse>;
+  CreateEventInput: CreateEventInput;
   DATETIME: ResolverTypeWrapper<Scalars['DATETIME']['output']>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  ExampleType: ResolverTypeWrapper<ExampleType>;
+  EventData: ResolverTypeWrapper<EventData>;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   NotFound: ResolverTypeWrapper<NotFound>;
@@ -184,10 +200,11 @@ export type ResolversParentTypes = {
   AuthSuccess: AuthSuccess;
   Boolean: Scalars['Boolean']['output'];
   CommonResponse: CommonResponse;
+  CreateEventInput: CreateEventInput;
   DATETIME: Scalars['DATETIME']['output'];
   Date: Scalars['Date']['output'];
   DateTime: Scalars['DateTime']['output'];
-  ExampleType: ExampleType;
+  EventData: EventData;
   JSON: Scalars['JSON']['output'];
   Mutation: {};
   NotFound: NotFound;
@@ -226,8 +243,12 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
-export type ExampleTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExampleType'] = ResolversParentTypes['ExampleType']> = {
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+export type EventDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['EventData'] = ResolversParentTypes['EventData']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  eventDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -236,6 +257,7 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createEvent?: Resolver<Maybe<ResolversTypes['EventData']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'data'>>;
   userSignIn?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignInArgs, 'data'>>;
   userSignUp?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignUpArgs, 'data'>>;
 };
@@ -246,7 +268,6 @@ export type NotFoundResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getEvent?: Resolver<Maybe<ResolversTypes['ExampleType']>, ParentType, ContextType>;
   getUserDetail?: Resolver<Maybe<ResolversTypes['UserData']>, ParentType, ContextType, RequireFields<QueryGetUserDetailArgs, 'id'>>;
 };
 
@@ -267,7 +288,7 @@ export type Resolvers<ContextType = any> = {
   DATETIME?: GraphQLScalarType;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
-  ExampleType?: ExampleTypeResolvers<ContextType>;
+  EventData?: EventDataResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   NotFound?: NotFoundResolvers<ContextType>;
