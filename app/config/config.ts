@@ -3,6 +3,22 @@ import "dotenv/config";
 import { Static, Type } from "@sinclair/typebox";
 import Ajv from "ajv";
 
+/**
+ * Checks if a given value is truthy.
+ *
+ * @param {string} value - The value to check.
+ * @return {boolean} True if the value is truthy, false otherwise.
+ */
+const booleanify = (value: string): boolean => {
+    const truthy: string[] = [
+        'true',
+        'True',
+        '1',
+    ]
+
+    return truthy.includes(value)
+}
+
 const ConfigSchema = Type.Strict(
     Type.Object({
         NODE_ENV: Type.String(),
@@ -16,6 +32,9 @@ const ConfigSchema = Type.Strict(
         DB_NAME: Type.String(),
         JWT_SECRET: Type.String(),
         JWT_EXPIRATION: Type.String(),
+        BASIC_AUTH_ENABLED: Type.Boolean(),
+        BASIC_AUTH_USERNAME: Type.String(),
+        BASIC_AUTH_PASSWORD: Type.String(),
     })
 );
 const ajv = new Ajv({
@@ -60,4 +79,7 @@ export const configData: Config = {
     NODE_ENV: filteredEnv.NODE_ENV,
     JWT_SECRET: filteredEnv.JWT_SECRET,
     JWT_EXPIRATION: filteredEnv.JWT_EXPIRATION,
+    BASIC_AUTH_ENABLED: booleanify(filteredEnv.BASIC_AUTH_ENABLED.toString()),
+    BASIC_AUTH_USERNAME: filteredEnv.BASIC_AUTH_USERNAME,
+    BASIC_AUTH_PASSWORD: filteredEnv.BASIC_AUTH_PASSWORD,
 };

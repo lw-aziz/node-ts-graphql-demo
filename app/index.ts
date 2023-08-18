@@ -9,6 +9,7 @@ import sequelizeConnection from './schema/config';
 import { schema } from './modules/Schema';
 import { configData } from './config/config';
 import { UserInterface } from './interfaces';
+import basicAuthMiddleware from './utils/basic-auth-middleware';
 //import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 
 interface GraphQlContext {
@@ -25,6 +26,10 @@ async function startServer() {
 
   const app = express();
   const httpServer = http.createServer(app);
+
+  // apply basic auth for playground access
+  app.get('/graphql', basicAuthMiddleware);
+
 
   const server = new ApolloServer<GraphQlContext>({
     schema: schema(),
