@@ -70,10 +70,17 @@ export enum InvitationStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptInvitation: CommonResponse;
   createEvent?: Maybe<EventData>;
   createInvitation: InvitationData;
+  rejectInvitation: CommonResponse;
   userSignIn?: Maybe<AuthSuccess>;
   userSignUp?: Maybe<AuthSuccess>;
+};
+
+
+export type MutationAcceptInvitationArgs = {
+  invitationId: Scalars['String']['input'];
 };
 
 
@@ -84,6 +91,11 @@ export type MutationCreateEventArgs = {
 
 export type MutationCreateInvitationArgs = {
   data: CreateInvitationInput;
+};
+
+
+export type MutationRejectInvitationArgs = {
+  invitationId: Scalars['String']['input'];
 };
 
 
@@ -300,8 +312,10 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptInvitation?: Resolver<ResolversTypes['CommonResponse'], ParentType, ContextType, RequireFields<MutationAcceptInvitationArgs, 'invitationId'>>;
   createEvent?: Resolver<Maybe<ResolversTypes['EventData']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'data'>>;
   createInvitation?: Resolver<ResolversTypes['InvitationData'], ParentType, ContextType, RequireFields<MutationCreateInvitationArgs, 'data'>>;
+  rejectInvitation?: Resolver<ResolversTypes['CommonResponse'], ParentType, ContextType, RequireFields<MutationRejectInvitationArgs, 'invitationId'>>;
   userSignIn?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignInArgs, 'data'>>;
   userSignUp?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignUpArgs, 'data'>>;
 };

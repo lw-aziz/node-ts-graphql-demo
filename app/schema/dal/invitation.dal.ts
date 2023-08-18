@@ -1,5 +1,6 @@
 import Invitation, { InvitationInput, InvitationOutput } from "../models/Invitation.model";
 import { InvitationStatus } from "../../generated/graphql";
+import { Includeable } from "sequelize";
 
 export class InvitationDAL {
     static async createInvitation(invitationData: InvitationInput): Promise<Invitation> {
@@ -16,9 +17,11 @@ export class InvitationDAL {
         return invitations;
     }
 
-    static async getById(InvitationId: string): Promise<Invitation | null> {
+    static async getById(InvitationId: string, include?: Includeable | Includeable[]): Promise<Invitation | null> {
         try {
-            const invitation = await Invitation.findByPk(InvitationId);
+            const invitation = await Invitation.findByPk(InvitationId, {
+                include
+            });
             return invitation;
         } catch (error) {
             return null;
@@ -54,11 +57,12 @@ export class InvitationDAL {
         }
     }
 
-    static async getInvitationByEventIdUserId(eventId: string, userId: string): Promise<Invitation | null> {
+    static async getInvitationByEventIdUserId(eventId: string, userId: string,  include?: Includeable | Includeable[]): Promise<Invitation | null> {
         try {
 
             const invitation = await Invitation.findOne({
-                where: { eventId, invitedTo: userId }
+                where: { eventId, invitedTo: userId },
+                include
             });
             return invitation;
         } catch (error) {

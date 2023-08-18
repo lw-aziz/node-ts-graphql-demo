@@ -1,7 +1,11 @@
 type Mutation {
   createInvitation(data: CreateInvitationInput!): InvitationData! @isAuthenticated
+  acceptInvitation(invitationId: String!): CommonResponse! @isAuthenticated
+  rejectInvitation(invitationId: String!): CommonResponse! @isAuthenticated
 }
-
+#type Query {
+#  getInvitationsByEvent: [InvitationData]! @isAuthenticated
+#}
 input CreateInvitationInput {
   eventId: String!
   email: String!

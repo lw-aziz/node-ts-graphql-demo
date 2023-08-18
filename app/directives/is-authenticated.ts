@@ -23,7 +23,7 @@ export const authDirectiveTransformer = (schema: GraphQLSchema, directiveName: s
             req.user = user;
             return await resolve(source, args, context, info);
           } catch (err) {
-            console.error(`Error from directives/authDirectiveTransformer -> ${err}`);
+            console.error(`Error from graphql -> ${err}`);
             throw err;
           }
         };
