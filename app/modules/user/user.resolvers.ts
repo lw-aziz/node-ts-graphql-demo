@@ -1,7 +1,7 @@
 import { Resolvers } from '../../generated/graphql';
-import { getUserDetail } from './resolvers/get-user';
-import { userLogin } from './resolvers/login';
-import { userSignUp } from './resolvers/signup';
+import { getUserDetail } from './resolvers/get.user';
+import { userLogin } from './resolvers/login.user';
+import { userSignUp } from './resolvers/signup.user';
 export const resolvers: Resolvers = {
     Query: {
         getUserDetail,
