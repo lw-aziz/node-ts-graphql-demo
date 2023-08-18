@@ -24,7 +24,7 @@ const ConfigSchema = Type.Strict(
         NODE_ENV: Type.String(),
         LOG_LEVEL: Type.String(),
         API_HOST: Type.String(),
-        API_PORT: Type.String(),
+        API_PORT: Type.Number(),
         DB_PORT: Type.String(),
         DB_USER: Type.String(),
         DB_PASSWORD: Type.String(),
@@ -69,7 +69,7 @@ if (!valid) {
 
 export const configData: Config = {
     API_HOST: filteredEnv.API_HOST,
-    API_PORT: filteredEnv.API_PORT,
+    API_PORT: parseInt(filteredEnv.API_PORT),
     DB_HOST: filteredEnv.DB_HOST,
     DB_PORT: filteredEnv.DB_PORT,
     DB_USER: filteredEnv.DB_USER,

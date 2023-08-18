@@ -10,65 +10,93 @@ import { schema } from './modules/Schema';
 import { configData } from './config/config';
 import { UserInterface } from './interfaces';
 import basicAuthMiddleware from './utils/basic-auth-middleware';
-//import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { Sequelize } from 'sequelize';
+import { GraphQLSchema } from 'graphql';
 
-interface GraphQlContext {
+export interface GraphQlContext {
   req?: {
-    user?: UserInterface
+    user: UserInterface
   }
 }
 
+class Server<port extends number, GraphQLRoute extends string, SequelizeConn extends Sequelize, schema extends GraphQLSchema> {
 
-/**
- * Starts the GraphQL server with Express
- */
-async function startServer() {
+  private _apolloServer: ApolloServer<GraphQlContext>;
+  private _app: express.Application;
+  private _port: port;
+  private _graphqlRoute: GraphQLRoute;
+  private _httpServer: http.Server;
+  private _sequelizeConnection: SequelizeConn;
+  private _schema: schema;
 
-  const app = express();
-  const httpServer = http.createServer(app);
+  constructor(port: port, graphqlRoute: GraphQLRoute, sequelizeConnection: SequelizeConn, schema: schema) {
+    this._port = port;
+    this._graphqlRoute = graphqlRoute;
+    this._sequelizeConnection = sequelizeConnection;
+    this._schema = schema;
+    this._app = express();
+    this._httpServer = http.createServer(this._app);
 
-  // apply basic auth for playground access
-  app.get('/graphql', basicAuthMiddleware);
+    this._apolloServer = this._startApolloServer(this._httpServer);
+  }
+  serve() {
+    this._sequelizeConnection.sync().then(async () => {
+      this._startServer();
+    });
+  }
+  async applyMiddleware() {
+
+    await this._apolloServer.start();
+
+    // apply basic auth for playground access
+    this._app.get(this._graphqlRoute, basicAuthMiddleware);
 
 
-  const server = new ApolloServer<GraphQlContext>({
-    schema: schema(),
-    plugins: [
-      ApolloServerPluginDrainHttpServer({ httpServer }),
-    ],
-    csrfPrevention: true,
-    formatError: error => {
-      // remove the internal sequelize error message
-      // leave only the important validation error
-      const message = error.message
-        .replace('SequelizeValidationError: ', '')
-        .replace('Validation error: ', '');
+    const server = this._apolloServer;
+    // Specify the path where we'd like to mount our server
+    this._app.use(
+      this._graphqlRoute,
+      cors<cors.CorsRequest>(),
+      bodyParser.json(),
+      expressMiddleware(server, {
+        context: async ({ req }) => {
+          return { req };
+        },
+      }),
+    );
 
-      return {
-        ...error,
-        message,
-      };
-    },
-  });
-  await server.start();
+    return this;
+  }
+  private _startApolloServer(httpServer: http.Server) {
 
-  // Specify the path where we'd like to mount our server
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>(),
-    bodyParser.json(),
-    expressMiddleware(server, {
-      context: async ({ req }) => {
-        return { req };
+    return new ApolloServer<GraphQlContext>({
+      schema: this._schema,
+      plugins: [
+        ApolloServerPluginDrainHttpServer({ httpServer }),
+      ],
+      csrfPrevention: true,
+      formatError: error => {
+        // remove the internal sequelize error message
+        // leave only the important validation error
+        const message = error.message
+          .replace('SequelizeValidationError: ', '')
+          .replace('Validation error: ', '');
+
+        return {
+          ...error,
+          message,
+        };
       },
-    }),
-  );
+    });
 
-  // Modified server startup
-  await new Promise<void>((resolve) => httpServer.listen({ port: configData.API_PORT }, resolve));
-  console.log(`🚀 Server ready at http://localhost:${configData.API_PORT}/`);
+  }
+
+  private async _startServer() {
+    await new Promise<void>((resolve) => this._httpServer.listen({ port: this._port }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${this._port}${this._graphqlRoute}`);
+  }
 }
 
-sequelizeConnection.sync().then(async () => {
-  startServer();
+new Server(configData.API_PORT, '/graphql', sequelizeConnection, schema()).applyMiddleware().then((server) => {
+  server.serve();
 });
