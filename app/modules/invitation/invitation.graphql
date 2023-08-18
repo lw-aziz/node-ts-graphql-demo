@@ -1,0 +1,24 @@
+type Mutation {
+  createInvitation(data: CreateInvitationInput!): InvitationData! @isAuthenticated
+}
+
+input CreateInvitationInput {
+  eventId: String!
+  email: String!
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+type InvitationData {
+  id: String!
+  createdAt: Date!
+  status: InvitationStatus!
+  eventId: String!
+  invitedBy: String!
+  invitedTo: String!
+  #  event: EventData!
+}

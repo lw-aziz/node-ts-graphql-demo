@@ -1,5 +1,5 @@
 import { DataType } from "sequelize-typescript";
-import { InvitationStatus } from "../models/Invitation.model";
+import { InvitationStatus } from "../../generated/graphql";
 
 export type CreateInvitationDTO = {
     eventId: string;
@@ -9,4 +9,4 @@ export type CreateInvitationDTO = {
     invitedTo: typeof DataType.UUID
 }
 
-export type UpdateInvitationDTO = Omit<CreateInvitationDTO, 'email'>;
+export type UpdateInvitationDTO = Omit<CreateInvitationDTO, 'email' | 'eventId' | 'invitedBy' | 'invitedTo'>;

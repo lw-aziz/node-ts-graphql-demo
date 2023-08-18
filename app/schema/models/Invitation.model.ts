@@ -2,19 +2,15 @@ import { Table, Column, Model, ForeignKey, BelongsTo, PrimaryKey, IsAfter, DataT
 import User from './User.model';
 import { Optional } from 'sequelize';
 import Event from './Event.model';
+import { InvitationStatus } from '../../generated/graphql';
 
-export enum InvitationStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED'
-};
 
 interface InvitationAttributes {
   readonly id: string;
-  readonly eventId: typeof DataType.UUID | string;
-  readonly invitedBy: typeof DataType.UUID;
-  readonly invitedTo: typeof DataType.UUID;
-  status: string | InvitationStatus;
+  readonly eventId: string;
+  readonly invitedBy: string;
+  readonly invitedTo: string;
+  status: InvitationStatus;
   readonly createdAt: Date;
 
   getInvitedUser(): Promise<User>;
@@ -42,7 +38,7 @@ export default class Invitation extends  Model<InvitationAttributes, InvitationI
     allowNull: false,
     defaultValue: DataType.UUIDV4
   })
-  id!: typeof DataType.UUID;
+  id!: string;
 
   @Column({
     type: DataType.STRING,
@@ -54,19 +50,19 @@ export default class Invitation extends  Model<InvitationAttributes, InvitationI
   @Column({
     type: DataType.UUID,
   })
-  eventId!: typeof DataType.UUID;
+  eventId!: string;
   
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
   })
-  invitedBy!: typeof DataType.UUID;
+  invitedBy!: string;
   
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
   })
-  invitedTo!: typeof DataType.UUID;
+  invitedTo!: string;
 
   @CreatedAt
   createdAt!: Date;

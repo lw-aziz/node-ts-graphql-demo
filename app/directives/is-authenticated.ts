@@ -13,16 +13,17 @@ export const authDirectiveTransformer = (schema: GraphQLSchema, directiveName: s
         fieldConfig.resolve = async (source, args, context, info) => { // Provide the correct return type
           try {
             const { req } = context;
-            const authToken = _.get(context, 'req.headers.authorization');
 
+            const authToken = _.get(context, 'req.headers.authorization');
             if (!authToken) throw new Error('UNAUTHORIZED');
 
-            const user = await getUserFromToken(authToken);
+            const user = await getUserFromToken(_.trim(authToken));
+            if (!user) throw new Error('UNAUTHORIZED');
 
             req.user = user;
             return await resolve(source, args, context, info);
           } catch (err) {
-            console.error(`Error from auth/authDirectiveTransformer -> ${err}`);
+            console.error(`Error from directives/authDirectiveTransformer -> ${err}`);
             throw err;
           }
         };

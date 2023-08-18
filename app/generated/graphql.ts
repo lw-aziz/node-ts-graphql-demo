@@ -38,6 +38,11 @@ export type CreateEventInput = {
   title: Scalars['String']['input'];
 };
 
+export type CreateInvitationInput = {
+  email: Scalars['String']['input'];
+  eventId: Scalars['String']['input'];
+};
+
 export type EventData = {
   __typename?: 'EventData';
   createdAt: Scalars['DateTime']['output'];
@@ -47,9 +52,26 @@ export type EventData = {
   title: Scalars['String']['output'];
 };
 
+export type InvitationData = {
+  __typename?: 'InvitationData';
+  createdAt: Scalars['Date']['output'];
+  eventId: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  invitedBy: Scalars['String']['output'];
+  invitedTo: Scalars['String']['output'];
+  status: InvitationStatus;
+};
+
+export enum InvitationStatus {
+  Accepted = 'ACCEPTED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createEvent?: Maybe<EventData>;
+  createInvitation: InvitationData;
   userSignIn?: Maybe<AuthSuccess>;
   userSignUp?: Maybe<AuthSuccess>;
 };
@@ -57,6 +79,11 @@ export type Mutation = {
 
 export type MutationCreateEventArgs = {
   data: CreateEventInput;
+};
+
+
+export type MutationCreateInvitationArgs = {
+  data: CreateInvitationInput;
 };
 
 
@@ -182,10 +209,13 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CommonResponse: ResolverTypeWrapper<CommonResponse>;
   CreateEventInput: CreateEventInput;
+  CreateInvitationInput: CreateInvitationInput;
   DATETIME: ResolverTypeWrapper<Scalars['DATETIME']['output']>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EventData: ResolverTypeWrapper<EventData>;
+  InvitationData: ResolverTypeWrapper<InvitationData>;
+  InvitationStatus: InvitationStatus;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   NotFound: ResolverTypeWrapper<NotFound>;
@@ -202,10 +232,12 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CommonResponse: CommonResponse;
   CreateEventInput: CreateEventInput;
+  CreateInvitationInput: CreateInvitationInput;
   DATETIME: Scalars['DATETIME']['output'];
   Date: Scalars['Date']['output'];
   DateTime: Scalars['DateTime']['output'];
   EventData: EventData;
+  InvitationData: InvitationData;
   JSON: Scalars['JSON']['output'];
   Mutation: {};
   NotFound: NotFound;
@@ -253,12 +285,23 @@ export type EventDataResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type InvitationDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['InvitationData'] = ResolversParentTypes['InvitationData']> = {
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  invitedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  invitedTo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['InvitationStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
   name: 'JSON';
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createEvent?: Resolver<Maybe<ResolversTypes['EventData']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'data'>>;
+  createInvitation?: Resolver<ResolversTypes['InvitationData'], ParentType, ContextType, RequireFields<MutationCreateInvitationArgs, 'data'>>;
   userSignIn?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignInArgs, 'data'>>;
   userSignUp?: Resolver<Maybe<ResolversTypes['AuthSuccess']>, ParentType, ContextType, RequireFields<MutationUserSignUpArgs, 'data'>>;
 };
@@ -291,6 +334,7 @@ export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   EventData?: EventDataResolvers<ContextType>;
+  InvitationData?: InvitationDataResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   NotFound?: NotFoundResolvers<ContextType>;

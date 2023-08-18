@@ -1,11 +1,8 @@
-import { AbstractDataTypeConstructor, Identifier } from "sequelize";
-import { ApiError } from "../../utils/custom-api-error";
-import { httpStatusCodes } from "../../utils/httpStatusCodes";
-import { UpdateInvitationDTO } from "../dto/invitation.dto";
 import Invitation, { InvitationInput, InvitationOutput } from "../models/Invitation.model";
+import { InvitationStatus } from "../../generated/graphql";
 
 export class InvitationDAL {
-    static async createInvitation(invitationData: InvitationInput): Promise<InvitationOutput> {
+    static async createInvitation(invitationData: InvitationInput): Promise<Invitation> {
         try {
             const invitation = await Invitation.create(invitationData);
             return invitation;
@@ -14,12 +11,12 @@ export class InvitationDAL {
         }
     }
 
-    static async getInvitationsByUser(userId: AbstractDataTypeConstructor): Promise<InvitationOutput[] | []> {
+    static async getInvitationsByUser(userId: string): Promise<Invitation[] | []> {
         const invitations = await Invitation.findAll({ where: { invitedTo: userId } });
         return invitations;
     }
 
-    static async getById(InvitationId: Identifier): Promise<Invitation | null> {
+    static async getById(InvitationId: string): Promise<Invitation | null> {
         try {
             const invitation = await Invitation.findByPk(InvitationId);
             return invitation;
@@ -28,13 +25,11 @@ export class InvitationDAL {
         }
     }
 
-    static async deleteById(InvitationId: Identifier): Promise<boolean> {
+    static async deleteById(InvitationId: string): Promise<boolean> {
         try {
             const invitation = await Invitation.findByPk(InvitationId);
 
-            if (!invitation) {
-                throw new ApiError('Invitation not found', httpStatusCodes.NOT_FOUND);
-            }
+            if (!invitation) throw new Error('Invitation not found');
 
             await invitation.destroy();
             return true;
@@ -44,11 +39,27 @@ export class InvitationDAL {
         }
     }
 
-    static async updateById(InvitationId: Identifier, payload: UpdateInvitationDTO): Promise<Invitation> {
+    static async updateStatusById(InvitationId: string, status: InvitationStatus): Promise<Invitation> {
         try {
             const invitation = await Invitation.findByPk(InvitationId);
-            if(!invitation) throw new ApiError('Invitation not found', httpStatusCodes.NOT_FOUND);
-            await invitation.update(payload);
+
+            if (!invitation) throw new Error('Invitation not found');
+
+            await invitation.update({
+                status
+            });
+            return invitation;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async getInvitationByEventIdUserId(eventId: string, userId: string): Promise<Invitation | null> {
+        try {
+
+            const invitation = await Invitation.findOne({
+                where: { eventId, invitedTo: userId }
+            });
             return invitation;
         } catch (error) {
             throw error;
