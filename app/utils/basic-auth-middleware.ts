@@ -2,7 +2,6 @@ import basicAuth from 'express-basic-auth';
 import { configData } from '../config/config';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-let basicAuthMiddleware : RequestHandler | NextFunction;
 
 /**
  * Authenticates a user using basic authorization.
@@ -24,17 +23,11 @@ const basicAuthorizer = async (username: string, password: string, cb: any) => {
   return cb(null, false);
 };
 
-if (configData.BASIC_AUTH_ENABLED) {
-  // Middleware to implement basic authentication
-  basicAuthMiddleware = basicAuth({
-    authorizer: basicAuthorizer,
-    authorizeAsync: true,
-    challenge: true,
-  });
-} else {
-  basicAuthMiddleware = (req: Request, res: Response, next : NextFunction) => {
-    next();
-  };
-}
+// Middleware to implement basic authentication
+const basicAuthMiddleware: RequestHandler = basicAuth({
+  authorizer: basicAuthorizer,
+  authorizeAsync: true,
+  challenge: true,
+});
 
 export default basicAuthMiddleware;

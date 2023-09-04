@@ -48,8 +48,10 @@ class Server<port extends number, GraphQLRoute extends string, SequelizeConn ext
 
     await this._apolloServer.start();
 
-    // apply basic auth for playground access
-    this._app.get(this._graphqlRoute, basicAuthMiddleware);
+    if (configData.BASIC_AUTH_ENABLED) {
+      // apply basic auth for playground access
+      this._app.get(this._graphqlRoute, basicAuthMiddleware);
+    }
 
 
     const server = this._apolloServer;
