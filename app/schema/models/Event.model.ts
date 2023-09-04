@@ -16,7 +16,7 @@ interface EventAttributes {
 export interface EventInput extends Optional<Omit<EventAttributes, 'id' | 'createdAt' | 'getUser'>, 'description'> { }
 
 export interface EventOutput extends EventAttributes {
-  invitations?: Invitation[]
+  invitations: Invitation[] | [];
 }
 
 @Table({

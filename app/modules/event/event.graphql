@@ -16,4 +16,5 @@ type EventData {
   description: String!
   eventDate: DateTime!
   createdAt: DateTime!
+  invitations: [InvitationData]!
 }

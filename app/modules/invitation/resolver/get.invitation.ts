@@ -1,0 +1,1 @@
+export const getInvitationsByEvent = 4;

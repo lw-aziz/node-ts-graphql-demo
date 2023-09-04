@@ -9,6 +9,5 @@ export default interface EventInterface {
     createdAt: Date;
     updatedAt?: Date
     deletedAt?: Date,
-    invitations?: InvitationInterface[]
-
+    invitations: InvitationInterface[] | []
 }

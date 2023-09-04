@@ -49,6 +49,7 @@ export type EventData = {
   description: Scalars['String']['output'];
   eventDate: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
+  invitations: Array<Maybe<InvitationData>>;
   title: Scalars['String']['output'];
 };
 
@@ -293,6 +294,7 @@ export type EventDataResolvers<ContextType = any, ParentType extends ResolversPa
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   eventDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  invitations?: Resolver<Array<Maybe<ResolversTypes['InvitationData']>>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

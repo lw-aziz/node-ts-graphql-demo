@@ -1,4 +1,4 @@
-import { InvitationStatus } from "../schema/models/Invitation.model";
+import { InvitationStatus } from "../generated/graphql";
 
 export interface InvitedToUserInterface {
     id: string;
@@ -10,7 +10,7 @@ export default interface InvitationInterface {
     eventId: string;
     invitedBy: string;
     invitedTo: string;
-    status: string | InvitationStatus;
+    status: InvitationStatus;
     createdAt: Date;
     updatedAt?: Date;
     deletedAt?: Date;

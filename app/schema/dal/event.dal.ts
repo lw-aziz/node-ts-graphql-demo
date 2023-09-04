@@ -1,4 +1,4 @@
-import { AbstractDataTypeConstructor, Identifier } from "sequelize";
+import { AbstractDataTypeConstructor, Identifier, Includeable } from "sequelize";
 import Event, { EventInput, EventOutput } from "../models/Event.model";
 import { UpdateEventDTO } from "../dto/event.dto";
 import Invitation from "../models/Invitation.model";
@@ -10,8 +10,8 @@ export class EventDAL {
         return event;
     }
 
-    static async getEventsByUser(userId: string): Promise<Event[] | []> {
-        const events = await Event.findAll({ where: { userId } });
+    static async getEventsByUser(userId: string, include?: Includeable | Includeable[]): Promise<Event[] | []> {
+        const events = await Event.findAll({ where: { userId }, include });
         return events;
     }
 

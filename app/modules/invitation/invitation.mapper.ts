@@ -12,4 +12,8 @@ export default class InvitationMapper {
             status: invitation.status
         }
     }
+
+    static toInvitations(invitations: Invitation[] | []): InvitationData[] {
+        return invitations?.map((invitation) => this.toInvitation(invitation));
+    }
 }
