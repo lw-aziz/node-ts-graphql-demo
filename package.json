@@ -1,9 +1,12 @@
 {
-  "name": "node-ts-graphql",
+  "name": "node-ts-graphql-demo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prestart": "npm run gen",
+    "prewatch": "npm run gen",
+    "start": "tsx app .env",
     "watch": "tsx watch app .env",
     "gen": "graphql-codegen --config codegen.ts"
   },
@@ -41,8 +44,6 @@
     "sequelize": "6.32.1",
     "sequelize-cli": "6.6.1",
     "sequelize-typescript": "2.1.5",
-    "ts-node": "10.9.1",
-    "type-graphql": "1.1.1",
     "typescript": "5.1.6"
   },
   "devDependencies": {
